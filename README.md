@@ -17,10 +17,12 @@ To get started with the project, please follow these steps:
 **Technical Requirements**
 
 - Use TypeScript & SCSS
-- For form validation, use react-hook-form
+- For form validation, use react-hook-form + zod
 - Follow the initial file structure provided
 - Write readable code
 - Create reusable components that are scalable for other services
+- Show errors to the user in a user-friendly way (e.g. a red border around the field) and in Hebrew.
+- When user is hitting submit, the form should be validated and if there are no errors, the form should be submitted to a global state (Zustand)
 
 **Features:**
 To complete this project, the form must include the following features:
