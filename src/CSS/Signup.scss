@@ -1,0 +1,32 @@
+.signup {
+    max-width: 80%;
+    height: 953px;
+    max-height: 100%;
+    left: 0px;
+    top: 0px;
+    margin: 0 auto;
+
+    background: rgba(255, 255, 255, 0.7);
+
+    background-image: url("../images/realestate.png");
+    background-repeat: no-repeat;
+    background-position: bottom left;
+    background-size: 607px 639px;
+
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25), inset 4px 4px 22px rgba(214, 228, 237, 0.15);
+    backdrop-filter: blur(12px);
+    /* Note: backdrop-filter has minimal browser support */
+
+    border-radius: 10.8305px;
+    padding: 0 10% 0 0;
+}
+.signup__splitter {
+    border: 1px solid #bfbfbf;
+    max-width: 611px;
+}
+.signup__image {
+    background-image: url("../images/realestate.png");
+    background-size: cover;
+    width: 639px;
+    height: 761px;
+}

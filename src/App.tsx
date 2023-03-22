@@ -1,11 +1,15 @@
-import Signup from "./view/pages/Signup";
+import Signup from './view/pages/Signup';
+import './index.scss';
 
 function App() {
   return (
-    <div className="App">
-      Hello World!
-      <Signup />
-    </div>
+    <>
+      <body className='body'>
+        <div className='App'>
+          <Signup name={''} age={0} tz={0} email={''} phone={0} />
+        </div>
+      </body>
+    </>
   );
 }
 
