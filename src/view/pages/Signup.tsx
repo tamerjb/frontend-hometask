@@ -1,43 +1,83 @@
-import React from 'react';
+import React, { useState, useEffect, Key } from 'react';
 import logo from '../../images/realestate.png';
+import Select from 'react-select';
+import axios from 'axios';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '../components/Input';
 import { SubmitButton } from '../components/SubmitButton';
+import { NewUser, NewUserSchema, validateForm } from '../../model';
+import { useStore } from '../../controller';
+
+import { useCities, useStreets } from '../../vendor/api/api';
 interface Props {
   name: string;
   age: number;
-  tz: number;
+  id: number;
   email: string;
   phone: number;
+  homeNumber: number;
 }
-function validateId(id: string): boolean {
-  // Check that the ID number is 9 digits long
-  if (id.length !== 9) {
-    return false;
-  }
+type OptionType = {
+  [x: string]: Key | null | undefined;
+  שם_ישוב: string;
+};
+const Signup: React.FC<Props> = ({
+  name,
+  age,
+  id,
+  email,
+  phone,
+  homeNumber,
+}) => {
+  const { setFormValid } = useStore();
+  const [selectedCity, setSelectedCity] = useState<OptionType | null>(null);
+  const [selectedStreet, setSelectedStreet] = useState<OptionType | null>(null);
+  const [isValid, setIsValid] = useState<boolean>(false);
+  // const formData = useFormStore((state: { formData: any }) => state.formData);
 
-  // Check that the last 6 digits are numeric
-  const lastSixDigits = parseInt(id.substr(3));
-  if (isNaN(lastSixDigits)) {
-    return false;
-  }
+  const cities = useCities();
+  const streets = useStreets(selectedCity);
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<NewUser>({
+    resolver: zodResolver(NewUserSchema),
+  });
 
-  // Check the validity of the check digit
-  let sum = 0;
-  for (let i = 0; i < id.length - 1; i++) {
-    const digit = parseInt(id[i]);
-    sum += digit * (i % 2 === 0 ? 1 : 2);
-  }
-  const checkDigit = (10 - (sum % 10)) % 10;
-  const lastDigit = parseInt(id[8]);
-  if (checkDigit !== lastDigit) {
-    return false;
-  }
+  const handleCityChange = (option: OptionType | null) => {
+    setSelectedCity(option);
+    setSelectedStreet(null);
+  };
 
-  // If all checks passed, the ID is valid
-  return true;
-}
+  const handleStreetChange = (option: OptionType | null) => {
+    setSelectedStreet(option);
+  };
+  const handleReset = () => {
+    // Reset the form using the reset function from react-hook-form
+    // This will clear all form fields and errors
+    reset();
+  };
+  useEffect(() => {
+    const isCityValid = selectedCity
+      ? cities.map((option) => option.value).includes(selectedCity.value)
+      : false;
+    const isStreetValid = selectedStreet
+      ? streets.map((option) => option.value).includes(selectedStreet.value)
+      : false;
+    setIsValid(isCityValid && isStreetValid);
+  }, [selectedCity, selectedStreet, cities, streets]);
+  const onFormSubmit = (data: NewUser) => {
+    const isValid = validateForm(data);
+    if (isValid) {
+      setFormValid(true);
+      console.log(data);
+      handleReset();
+    }
+  };
 
-const Signup: React.FC<Props> = ({ name, age }) => {
   return (
     <div className='signup'>
       <div className='signup__title-container'>
@@ -46,86 +86,128 @@ const Signup: React.FC<Props> = ({ name, age }) => {
           *שדות המסומנים בכוכבית הם שדות חובה{' '}
         </p> */}
       </div>
+
       <div className='signup__form-container'>
-        <form className='singup__form'>
-          <div className='wrapper2'>
+        <form
+          className='singup__form'
+          onSubmit={handleSubmit(onFormSubmit)}
+          action='/submit-form'
+          method='post'
+        >
+          <div className='title__input__container'>
             <p className='signup__form-section-title'>פרטים אישיים: </p>
             <p className='signup__splitter'></p>
           </div>
-          <div className='wrapper'>
+          <div className='input__container'>
             <Input
               className='signup__form-input'
-              inputPlaceholder='שם מלא:'
+              label='שם מלא:'
+              inputProps={register('name')}
+              id='name'
               PlaceholderClassName='signup__form-name'
+              error={errors?.name?.message as string}
             />
             <Input
               className='signup__form-input'
-              inputPlaceholder='ת.ז:'
+              label='ת.ז:'
               PlaceholderClassName='signup__form-name'
+              inputProps={register('id')}
+              error={errors?.id?.message}
+              type='string'
             />
             <Input
               type='date'
               className='signup__form-input signup__form-input-date'
-              inputPlaceholder='תאריך לידה:'
+              label='תאריך לידה:'
               PlaceholderClassName='signup__form-name signup__form-birthday'
               id='date-input'
+              inputProps={register('dateOfBirth')}
+              error={errors?.dateOfBirth?.message}
             />
           </div>
 
-          <div className='wrapper2'>
-            <p className='signup__form-section-title'>פרטים אישיים: </p>
+          <div className='title__input__container'>
+            <p className='signup__form-section-title'>פרטי תקשורת: </p>
             <p className='signup__splitter'></p>
           </div>
 
-          <div className='wrapper'>
+          <div className='input__container'>
             <Input
               className='signup__form-input'
-              inputPlaceholder='שם מלא:'
+              label='נייד:'
+              inputProps={register('phone')}
               PlaceholderClassName='signup__form-name'
+              error={errors?.phone?.message}
             />
             <Input
               className='signup__form-input'
-              inputPlaceholder='תז:'
+              label='מייל:'
+              inputProps={register('email')}
               PlaceholderClassName='signup__form-name'
+              error={errors?.email?.message}
             />
           </div>
-          <div className='wrapper2'>
-            <p className='signup__form-section-title'>פרטים אישיים: </p>
+          <div className='title__input__container'>
+            <p className='signup__form-section-title'>כתובת: </p>
             <p className='signup__splitter'></p>
           </div>
-          <div className='wrapper'>
-            <Input
-              className='signup__form-input'
-              inputPlaceholder='רחוב:'
-              PlaceholderClassName='signup__form-name'
-            />
-            <Input
-              className='signup__form-input'
-              inputPlaceholder='עיר:'
-              PlaceholderClassName='signup__form-name'
-            />
-            <Input
-              className='signup__form-input signup__form-input-house'
-              inputPlaceholder='מספר בית:'
-              PlaceholderClassName='signup__form-name signup__form-house'
-            />
+          <div className='input__container'>
+            <div className='signup__form-section'>
+              <p className='signup__form-name'>עיר:</p>
+              <Select
+                id='city'
+                options={cities}
+                value={selectedCity}
+                onChange={handleCityChange}
+                className='signup__form-input'
+                placeholder=''
+              />
+            </div>
+            <div className='signup__form-section'>
+              <p className='signup__form-name'>רחוב:</p>
+              <Select
+                className='signup__form-input'
+                id='street'
+                options={streets}
+                value={selectedStreet}
+                onChange={handleStreetChange}
+                isDisabled={!selectedCity}
+                placeholder=''
+              />
+            </div>
+
+            <div className='signup__form-section'>
+              <Input
+                className='signup__form-input signup__form-input-house'
+                label='מספר בית:'
+                PlaceholderClassName='signup__form-name signup__form-house'
+                type='string'
+                id='homeNumber'
+              />
+            </div>
           </div>
           <div>
-            <label>
-              <input className='signup__form-checkbox' type='checkbox' />
-              אני מסכים לקבל דיוור במייל ובמסרון{' '}
-            </label>
-          </div>
-          <div>
-            <label>
-              <input className='signup__form-checkbox' type='checkbox' />
-              אני מסכים לתנאי השירות
-            </label>
-            <SubmitButton className='signup__form-button' value='שלח' />
+            <div className='checkbox'>
+              <div className='mui-checkbox'>
+                <input id='sed' type='checkbox' value='' />
+                <label htmlFor='sed'>אני מסכים לקבל דיוור במסרון ובמייל</label>
+              </div>
+
+              <div>
+                <div className='mui-checkbox'>
+                  <input id='agree' type='checkbox' value='' />
+                  <label htmlFor='agree'>אני מסכים לתנאי השירות </label>
+                </div>
+              </div>
+            </div>
+            <SubmitButton
+              buttoninput__container='button-container'
+              className='signup__form-button'
+              value='שלח'
+            />
           </div>
         </form>
       </div>
-      {/* <img className='signup__image' src={logo} alt='aa' /> */}
     </div>
   );
 };

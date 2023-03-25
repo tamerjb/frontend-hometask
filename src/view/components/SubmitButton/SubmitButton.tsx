@@ -4,17 +4,19 @@ import './SubmitButton.style.scss';
 export interface SubmitButtonProps {
   className: string;
   value: string;
-  buttonWrapper?: string;
+  buttoninput__container?: string;
 }
 
 const SubmitButton: React.FC<SubmitButtonProps> = ({
   className,
   value,
-  buttonWrapper,
+  buttoninput__container,
 }) => {
   return (
-    <div className={buttonWrapper}>
-      <button className={className}>{value}</button>
+    <div className={buttoninput__container}>
+      <button type='submit' className={className}>
+        {value}
+      </button>
     </div>
   );
 };

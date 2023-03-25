@@ -1,9 +1,15 @@
-import { create } from "zustand";
-import { userSlice } from "./entities/user.slice";
-import { UserSlice } from "./entities/user.types";
 
-type Store = UserSlice;
+import create, { SetState } from 'zustand';
+import { FormActions, UserSlice } from './entities/user.types';
+type FormState = {
+  isFormValid: boolean;
 
-export const useStore = create<Store>((...slices) => ({
-  ...userSlice(...slices),
+};
+type UseFormStore = FormState & FormActions;
+
+
+
+export const useStore = create<UseFormStore>((set: SetState<UseFormStore>) => ({
+  isFormValid: false,
+  setFormValid: (isValid: boolean) => set({ isFormValid: isValid }),
 }));
