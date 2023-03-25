@@ -34,7 +34,6 @@ const Signup: React.FC<Props> = ({
   const [selectedCity, setSelectedCity] = useState<OptionType | null>(null);
   const [selectedStreet, setSelectedStreet] = useState<OptionType | null>(null);
   const [isValid, setIsValid] = useState<boolean>(false);
-  // const formData = useFormStore((state: { formData: any }) => state.formData);
 
   const cities = useCities();
   const streets = useStreets(selectedCity);
@@ -56,8 +55,6 @@ const Signup: React.FC<Props> = ({
     setSelectedStreet(option);
   };
   const handleReset = () => {
-    // Reset the form using the reset function from react-hook-form
-    // This will clear all form fields and errors
     reset();
   };
   useEffect(() => {
