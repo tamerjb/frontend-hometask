@@ -6,7 +6,7 @@ function App() {
   return (
     <>
       <div className='App'>
-        <Signup name={''} age={0} id={0} email={''} phone={0} homeNumber={0} />
+        <Signup />
         <img className='background-image' src={realestate} alt='Background' />
       </div>
     </>

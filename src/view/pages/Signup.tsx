@@ -11,25 +11,18 @@ import { useStore } from '../../controller';
 
 import { useCities, useStreets } from '../../vendor/api/api';
 interface Props {
-  name: string;
-  age: number;
-  id: number;
-  email: string;
-  phone: number;
-  homeNumber: number;
+  name?: string;
+  age?: number;
+  id?: number;
+  email?: string;
+  phone?: number;
+  homeNumber?: number;
 }
 type OptionType = {
   [x: string]: Key | null | undefined;
   שם_ישוב: string;
 };
-const Signup: React.FC<Props> = ({
-  name,
-  age,
-  id,
-  email,
-  phone,
-  homeNumber,
-}) => {
+const Signup: React.FC<Props> = ({}) => {
   const { setFormValid } = useStore();
   const [selectedCity, setSelectedCity] = useState<OptionType | null>(null);
   const [selectedStreet, setSelectedStreet] = useState<OptionType | null>(null);
