@@ -5,28 +5,16 @@ import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '../components/Input';
-import { SubmitButton } from '../components/SubmitButton';
+import SubmitButton from '../components/SubmitButton/SubmitButton';
 import { NewUser, NewUserSchema, validateForm } from '../../model';
 import { useStore } from '../../controller';
+import { OptionType, useCities, useStreets } from '../../vendor/api/api';
 
-import { useCities, useStreets } from '../../vendor/api/api';
-interface Props {
-  name?: string;
-  age?: number;
-  id?: number;
-  email?: string;
-  phone?: number;
-  homeNumber?: number;
-}
-type OptionType = {
-  [x: string]: Key | null | undefined;
-  שם_ישוב: string;
-};
-const Signup: React.FC<Props> = ({}) => {
-  const { setFormValid } = useStore();
+const Signup: React.FC = () => {
+  const { setFormValid, saveUser } = useStore();
+
   const [selectedCity, setSelectedCity] = useState<OptionType | null>(null);
   const [selectedStreet, setSelectedStreet] = useState<OptionType | null>(null);
-  const [isValid, setIsValid] = useState<boolean>(false);
 
   const cities = useCities();
   const streets = useStreets(selectedCity);
@@ -34,7 +22,7 @@ const Signup: React.FC<Props> = ({}) => {
     register,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, isValid, isDirty },
   } = useForm<NewUser>({
     resolver: zodResolver(NewUserSchema),
   });
@@ -50,21 +38,13 @@ const Signup: React.FC<Props> = ({}) => {
   const handleReset = () => {
     reset();
   };
-  useEffect(() => {
-    const isCityValid = selectedCity
-      ? cities.map((option) => option.value).includes(selectedCity.value)
-      : false;
-    const isStreetValid = selectedStreet
-      ? streets.map((option) => option.value).includes(selectedStreet.value)
-      : false;
-    setIsValid(isCityValid && isStreetValid);
-  }, [selectedCity, selectedStreet, cities, streets]);
+
   const onFormSubmit = (data: NewUser) => {
-    const isValid = validateForm(data);
     if (isValid) {
       setFormValid(true);
       console.log(data);
       handleReset();
+      saveUser(data);
     }
   };
 
@@ -90,10 +70,11 @@ const Signup: React.FC<Props> = ({}) => {
           </div>
           <div className='input__container'>
             <Input
-              className='signup__form-input'
               label='שם מלא:'
-              inputProps={register('name')}
-              id='name'
+              inputProps={{
+                ...register('name'),
+              }}
+              className='signup__form-input'
               PlaceholderClassName='signup__form-name'
               error={errors?.name?.message as string}
             />
@@ -103,7 +84,7 @@ const Signup: React.FC<Props> = ({}) => {
               PlaceholderClassName='signup__form-name'
               inputProps={register('id')}
               error={errors?.id?.message}
-              type='string'
+              type='text'
             />
             <Input
               type='date'
@@ -171,8 +152,9 @@ const Signup: React.FC<Props> = ({}) => {
                 className='signup__form-input signup__form-input-house'
                 label='מספר בית:'
                 PlaceholderClassName='signup__form-name signup__form-house'
-                type='string'
-                id='homeNumber'
+                type='number'
+                id='street'
+                error={errors?.homeNumber?.message}
               />
             </div>
           </div>
@@ -191,7 +173,7 @@ const Signup: React.FC<Props> = ({}) => {
               </div>
             </div>
             <SubmitButton
-              buttoninput__container='button-container'
+              containerClassName='button-container'
               className='signup__form-button'
               value='שלח'
             />

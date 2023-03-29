@@ -1,19 +1,24 @@
-import React from 'react';
+import React, {
+  AllHTMLAttributes,
+  ButtonHTMLAttributes,
+  HtmlHTMLAttributes,
+} from 'react';
 import './SubmitButton.style.scss';
 
-export interface SubmitButtonProps {
+export interface SubmitButtonProps
+  extends React.HTMLAttributes<HTMLButtonElement> {
   className: string;
   value: string;
-  buttoninput__container?: string;
+  containerClassName?: string;
 }
 
 const SubmitButton: React.FC<SubmitButtonProps> = ({
   className,
   value,
-  buttoninput__container,
+  containerClassName,
 }) => {
   return (
-    <div className={buttoninput__container}>
+    <div className={containerClassName}>
       <button type='submit' className={className}>
         {value}
       </button>

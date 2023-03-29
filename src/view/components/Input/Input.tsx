@@ -4,7 +4,7 @@ import { RefCallBack } from 'react-hook-form';
 
 export interface InputProps {
   className: string;
-  type?: 'string' | 'phone-number' | 'number' | 'dateTime' | 'date';
+  type?: 'text' | 'phone-number' | 'number' | 'dateTime' | 'date';
   label: string;
   id?: string;
   error?: string;
