@@ -32,7 +32,7 @@ export const userSlice: StateCreator<UserSlice> = (set) => ({
     phone: "",
     city: "",
     street: "",
-    homeNumber:1
+    homeNumber:""
   },
   saveUser: (user: NewUser) => {
     set(() => ({

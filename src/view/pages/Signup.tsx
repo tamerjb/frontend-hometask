@@ -1,7 +1,6 @@
-import React, { useState, useEffect, Key } from 'react';
+import React, { useState, useEffect, Key, FormEvent } from 'react';
 import logo from '../../images/realestate.png';
 import Select from 'react-select';
-import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '../components/Input';
@@ -9,6 +8,8 @@ import SubmitButton from '../components/SubmitButton/SubmitButton';
 import { NewUser, NewUserSchema, validateForm } from '../../model';
 import { useStore } from '../../controller';
 import { OptionType, useCities, useStreets } from '../../vendor/api/api';
+import { date } from 'zod';
+// import { type } from '../../model/NewUser.model';
 
 const Signup: React.FC = () => {
   const { setFormValid, saveUser } = useStore();
@@ -40,12 +41,16 @@ const Signup: React.FC = () => {
   };
 
   const onFormSubmit = (data: NewUser) => {
+    console.log(isValid);
     if (isValid) {
       setFormValid(true);
       console.log(data);
       handleReset();
       saveUser(data);
     }
+  };
+  const handleFormEvent = (e: FormEvent<HTMLFormElement>) => {
+    // Do something
   };
 
   return (
@@ -60,7 +65,7 @@ const Signup: React.FC = () => {
       <div className='signup__form-container'>
         <form
           className='singup__form'
-          onSubmit={handleSubmit(onFormSubmit)}
+          onSubmit={handleSubmit()}
           action='/submit-form'
           method='post'
         >
@@ -91,7 +96,7 @@ const Signup: React.FC = () => {
               className='signup__form-input signup__form-input-date'
               label='תאריך לידה:'
               PlaceholderClassName='signup__form-name signup__form-birthday'
-              id='date-input'
+              // id='date-input'
               inputProps={register('dateOfBirth')}
               error={errors?.dateOfBirth?.message}
             />
@@ -152,8 +157,11 @@ const Signup: React.FC = () => {
                 className='signup__form-input signup__form-input-house'
                 label='מספר בית:'
                 PlaceholderClassName='signup__form-name signup__form-house'
+                // id='homeNumber'
+                // inputProps={register('homeNumber')}
+                inputProps={register('homeNumber')}
+                id='homeNumber'
                 type='number'
-                id='street'
                 error={errors?.homeNumber?.message}
               />
             </div>

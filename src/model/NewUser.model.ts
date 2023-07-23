@@ -25,7 +25,7 @@ import { z } from "zod";
     email: z.string().min(1, "שדה האימייל הוא חובה").email("האיימיל לא תקין "),
     city: z.string().min(1, "שדה זה הוא חובה"),
     street: z.string().min(1, "שדה זה הוא חובה"),
-    homeNumber: z.number().min(1, "שדה זה הוא חובה"),
+    homeNumber: z.string().min(1, "שדה זה הוא חובה"),
   });
   export const validateForm = (data: NewUser): boolean => {
     const result = NewUserSchema.safeParse(data);

@@ -1,25 +1,19 @@
-import React, { useState } from 'react';
+import React, {
+  HtmlHTMLAttributes,
+  HTMLInputTypeAttribute,
+  InputHTMLAttributes,
+  useState,
+} from 'react';
 import './Input.style.scss';
 import { RefCallBack } from 'react-hook-form';
 
-export interface InputProps {
+export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   className: string;
   type?: 'text' | 'phone-number' | 'number' | 'dateTime' | 'date';
   label: string;
-  id?: string;
   error?: string;
   inputProps?: {
-    onChange?: (ev: any) => unknown;
-    onBlur?: (ev: any) => unknown;
     ref?: RefCallBack;
-    name?: string;
-    min?: string | number;
-    max?: string | number;
-    maxLength?: number;
-    minLength?: number;
-    pattern?: string;
-    required?: boolean;
-    disabled?: boolean;
   };
   PlaceholderClassName?: string;
 }
@@ -29,7 +23,6 @@ const Input: React.FC<InputProps> = ({
   PlaceholderClassName,
   type,
   label,
-  id,
   error,
   inputProps,
 }) => {
@@ -54,7 +47,6 @@ const Input: React.FC<InputProps> = ({
         {...inputProps}
         type={type}
         className={error ? className + ' error-message' : className}
-        id={id}
       ></input>
       {error ? <span className='error-message'>*{error}</span> : null}
     </div>
